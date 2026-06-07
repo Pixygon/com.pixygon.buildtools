@@ -1,0 +1,25 @@
+{
+  "name": "com.pixygon.buildtools",
+  "version": "0.1.0",
+  "displayName": "Pixygon - Build Tools",
+  "description": "One-click multi-platform build + ship for Pixygon Unity games: BunnyCDN upload with cache purge, automatic patch-version bump, self-describing WebGL build manifest, and macOS code-signing + notarization. Provides an in-editor 'Build & Ship ALL' (cross-domain-reload queue, no need to close Unity) and a batchmode ship.sh CLI. GameName auto-derives from productName, so adoption is near-zero-config.",
+  "unity": "6000.4",
+  "documentationUrl": "https://www.pixygon.io/dev/buildtools",
+  "changelogUrl": "https://www.pixygon.io/dev/buildtools/changelog",
+  "licensesUrl": "https://www.pixygon.io/dev/buildtools/license",
+  "hideInEditor": false,
+  "keywords": [
+    "Pixygon",
+    "Build",
+    "Ship",
+    "CI",
+    "BunnyCDN",
+    "Notarization",
+    "Tool"
+  ],
+  "author": {
+    "name": "Pixygon",
+    "email": "pixygon@pixygon.io",
+    "url": "https://www.pixygon.io"
+  }
+}
