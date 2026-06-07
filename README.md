@@ -39,11 +39,47 @@ Pixiel Dreadwager so every Pixygon project gets the same pipeline.
 
 ## Adopting in a new project
 
-1. Add the git URL to `Packages/manifest.json`:
-   `"com.pixygon.buildtools": "https://github.com/Pixygon/com.pixygon.buildtools.git"`
-2. (Optional, for the CLI) `Pixygon → Build & Ship → Install CLI scripts` — copies
-   `ship.sh` / `notarize-mac.sh` / `compile-check.sh` to the project root.
-3. Credentials are already shared per-machine. Done.
+The **build** layer works today with one step and zero config; the ship layer arrives later.
+
+### Requirements
+- Unity **6000.4** or newer.
+- The platform **build-support modules** for the targets you want (WebGL / Windows /
+  Mac / Linux), installed via Unity Hub. A target whose module is missing logs a
+  clear error and is skipped — it never fails the others.
+
+### Install (build layer — available now)
+1. Add the git URL to your project's `Packages/manifest.json`, under `dependencies`:
+   ```json
+   "com.pixygon.buildtools": "https://github.com/Pixygon/com.pixygon.buildtools.git"
+   ```
+   Unity resolves it on next focus. **That's the whole setup** — no scene, no
+   prefab, no settings asset.
+2. Build from the menu: **`Pixygon → Build →`** *WebGL (Release)* · *Windows (Mono)* ·
+   *macOS (Mono)* · *Linux (Mono)* · *All Standalone + WebGL*.
+
+### What you get
+- **Output**: `Builds/<target>/<version>/` (version = `PlayerSettings.bundleVersion`,
+  so bump it in Player Settings to keep history). WebGL also mirrors to
+  `Builds/WebGL/latest/` as a stable deploy head.
+- **`GameName` auto-derives** from `PlayerSettings.productName` (non-alphanumerics
+  stripped): `"Pixiel: Dreadwager"` → `PixielDreadwager`, `"Veilwalkers"` →
+  `Veilwalkers`. It drives the WebGL folder name (`<GameName>_WebGL`) and the
+  standalone filenames — no per-project config.
+- **Scenes** come from your **Build Profiles** list (`EditorBuildSettings.scenes`,
+  enabled only). Edit that list, never the package.
+- **WebGL** is forced to the own-site/CDN hosting profile (Brotli + content-hashed
+  filenames + decompression fallback + explicitly-thrown-only exceptions).
+  **Standalone** is forced to Mono (opt into IL2CPP per project if you prefer).
+- **Scriptable / CI**: every entry point is a public static on
+  `Pixygon.BuildTools.BuildTools` — e.g. `BuildTools.BuildWebGLInternal(allowSwitch: true)`,
+  `BuildTools.GameName`, `BuildTools.ProjectRoot` — so your own editor or batchmode
+  code can call them directly.
+
+### Ship layer (coming — design is the rest of this README)
+BunnyCDN upload + cache purge, patch-version bump, the WebGL `build-manifest.json`,
+macOS notarization, the cross-reload "Build & Ship ALL" queue, and the `ship.sh`
+CLI still live in Pixiel Dreadwager and migrate here next. Until then the package
+ships the build menu only.
 
 ## Roadmap
 
