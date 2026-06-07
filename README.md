@@ -3,15 +3,19 @@
 One-click, multi-platform **build + ship** for Pixygon Unity games. Extracted from
 Pixiel Dreadwager so every Pixygon project gets the same pipeline.
 
-> **Status: build core implemented.** The multi-platform **build** entry points
-> (`Editor/BuildTools.cs`) are in and fully generic — `GameName` auto-derives from
-> `PlayerSettings.productName`, so it works in any project with zero config. Menu:
-> `Pixygon/Build/` → WebGL / Windows / macOS / Linux / All.
+> **Status: build + ship implemented (C#).** Both the **build** entry points
+> (`Editor/BuildTools.cs`) AND the **ship** layer are now in the package's editor
+> code — Build & Ship menu + cross-reload queue (`BuildAndShip`), BunnyCDN upload +
+> cache purge (`BunnyUploader`), credentials window (`BunnySettingsWindow`),
+> patch-version bump (`VersionTools`), WebGL `build-manifest.json`
+> (`WebGLBuildManifest`), rollback (`WebGLRollbackWindow`), the auto-handoff
+> (`BuildHandoff`), and the batchmode entry (`BuildCLI`). All generic — GameName /
+> paths derive from the project; Bunny config is per-machine.
 >
-> The **ship** layer (BunnyCDN upload + cache purge, patch-version bump, WebGL
-> `build-manifest.json`, macOS notarization, the cross-reload "Build & Ship ALL"
-> queue, and the batchmode `ship.sh` CLI) still migrates here from PixielDreadwager
-> next. The sections below are the design of record for that layer.
+> **Remaining:** generalize the shell-script CLI wrappers (`ship.sh` /
+> `notarize-mac.sh`) — they still hardcode the Dreadwager game name/path — and ship
+> them in the package so a new project can install them with one command. Until
+> then the in-editor ship flow is fully usable; the headless CLI is project-local.
 
 ## What it does
 
@@ -75,11 +79,19 @@ The **build** layer works today with one step and zero config; the ship layer ar
   `BuildTools.GameName`, `BuildTools.ProjectRoot` — so your own editor or batchmode
   code can call them directly.
 
-### Ship layer (coming — design is the rest of this README)
-BunnyCDN upload + cache purge, patch-version bump, the WebGL `build-manifest.json`,
-macOS notarization, the cross-reload "Build & Ship ALL" queue, and the `ship.sh`
-CLI still live in Pixiel Dreadwager and migrate here next. Until then the package
-ships the build menu only.
+### Ship layer (in the package — needs per-machine credentials)
+The in-editor ship flow works once you set credentials:
+1. **`Pixygon → Build & Ship → Bunny Credentials…`** — enter the BunnyCDN storage-zone
+   API key (and optionally account API key for cache purge, + a macOS signing identity).
+   Stored per-machine (EditorPrefs); also readable from `BUNNY_*` env vars or
+   `~/.config/pixygon/bunny.json`, so they're set once per machine for every project.
+2. **`Pixygon → Build & Ship →`** *Build & Ship WebGL / Windows / macOS / Linux / All*.
+   WebGL ships in-editor; desktop targets use the close-build-reopen auto-handoff.
+3. Rollback a WebGL release via **`Pixygon → Build & Ship → Rollback WebGL…`**.
+
+**Headless CLI** (`./ship.sh all`) is still project-local — the shell wrappers are
+being generalized + packaged (see Status). For now, copy `ship.sh` / `notarize-mac.sh`
+from a project that has them and set the game name at the top.
 
 ## Roadmap
 

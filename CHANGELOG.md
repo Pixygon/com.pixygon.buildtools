@@ -22,7 +22,15 @@ All notable changes to `com.pixygon.buildtools`. Format loosely follows
 - Package scaffold: `package.json`, Editor asmdef (`Pixygon.BuildTools.Editor`), README
   (design of record for the full pipeline), git repo.
 
+- **Ship layer** (migrated from Pixiel Dreadwager): `BuildAndShip` (Build & Ship menu
+  + cross-reload queue), `BunnyUploader` (BunnyCDN upload + cache purge),
+  `BunnySettingsWindow` (per-machine credentials), `VersionTools` (patch bump),
+  `WebGLBuildManifest` (`build-manifest.json`), `WebGLRollbackWindow`, `BuildHandoff`
+  (close-build-reopen auto-handoff), `BuildCLI` (batchmode entry). All generic; Bunny
+  config via env / `~/.config/pixygon/bunny.json` / EditorPrefs.
+
 ### Not yet migrated (roadmap — see README)
-- Ship layer: BunnyCDN upload + cache purge, patch-version bump, WebGL
-  `build-manifest.json`, macOS code-sign/notarize/staple, the cross-reload
-  "Build & Ship ALL" queue, and the batchmode `ship.sh` CLI.
+- Shell-script CLI wrappers (`ship.sh` / `notarize-mac.sh`): still hardcode the game
+  name/path; to be generalized + shipped in the package with a one-command install.
+- The project-specific changelog export (reads `VersionData` SOs) intentionally stays
+  in each game.
