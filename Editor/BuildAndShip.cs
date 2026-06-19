@@ -45,16 +45,22 @@ public static class BuildAndShip {
     [MenuItem(Menu + "Build & Ship Linux (auto: closes + reopens editor)", priority = 3)]
     public static void ShipLinux() => BuildHandoff.Launch(new[] { "linux" });
 
-    [MenuItem(Menu + "Build & Ship All Desktop (auto: closes + reopens editor)", priority = 4)]
-    public static void ShipAllDesktop() => BuildHandoff.Launch(new[] { "windows", "mac", "linux" });
+    [MenuItem(Menu + "Build & Ship All Desktop — Windows + macOS (auto: closes + reopens editor)", priority = 4)]
+    public static void ShipAllDesktop() => BuildHandoff.Launch(new[] { "windows", "mac" });
+
+    // The one-button release: WebGL first, then the desktop targets — each in its own
+    // batchmode process (the handoff closes + reopens the editor), so no mid-session
+    // build-target switch ever poisons Addressables/SBP. Linux is omitted (its
+    // Addressables build is broken — ship it explicitly if/when fixed).
+    [MenuItem(Menu + "Build & Ship EVERYTHING — WebGL + Desktop (auto: closes + reopens editor)", priority = 5)]
+    public static void ShipEverything() => BuildHandoff.Launch(new[] { "webgl", "windows", "mac" });
 
     // ---- version ------------------------------------------------------------
     // Shipping is PER-PLATFORM and does NOT auto-bump — every ship uses the current
     // PlayerSettings version, so you can ship WebGL, Windows and macOS one at a time and
     // they all land on the SAME version. Bump deliberately, once, when you start a new
-    // release. (There is no in-editor "build all": interactive Unity can't build
-    // Addressables for a target it just switched to — use `./ship.sh all` with the
-    // editor closed for an unattended all-platform run.)
+    // release. For an unattended all-platform run, the "Build & Ship EVERYTHING" item
+    // above (or `./ship.sh all` with the editor closed) builds each target headless.
 
     [MenuItem(Menu + "Bump Patch Version", priority = 10)]
     public static void BumpPatchVersion() {
