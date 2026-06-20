@@ -131,6 +131,11 @@ public static class BuildCLI {
                 var dir = Pixygon.BuildTools.BuildTools.BuildWindowsMonoInternal(allowSwitch);
                 if (dir == null) { Debug.LogError("[BuildCLI] Windows build failed."); return false; }
                 Marker("BUILD_OUTPUT", dir);
+                // -shipNoZip: the player is built but the .zip is NOT created/uploaded — the
+                // caller (ship.sh) packages + ships an NSIS installer instead. The raw zip is
+                // obsolete: it trips 0x80004005 (Mark-of-the-Web / built-in extractor) and
+                // 0xc000007b (missing VC++ runtime) on players' machines; the installer fixes both.
+                if (HasFlag("-shipNoZip")) { Debug.Log("[BuildCLI] -shipNoZip: built Windows player; installer shipped by ship.sh."); return true; }
                 return !upload || ShipWindows(dir, cfg);
             }
             case "linux": {
