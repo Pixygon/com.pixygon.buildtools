@@ -29,30 +29,30 @@ public static class BuildAndShip {
     private const string Menu = "Pixygon/Build & Ship/";
 
     // WebGL ships directly in-editor (Ctrl+Alt+W) — it's the active target, no switch.
-    [MenuItem(Menu + "Build & Ship WebGL %&w", priority = 0)]
+    [MenuItem(Menu + "WebGL %&w", priority = 0)]
     public static async void ShipWebGL() => await RunWebGL(standalone: true);
 
     // Desktop targets need a build-target switch, which interactive Unity can't do for
     // Addressables. These hand off to a headless batchmode build that CLOSES and REOPENS
     // the editor automatically (no keyboard shortcuts — closing the editor by accident
     // would be rude). See BuildHandoff.
-    [MenuItem(Menu + "Build & Ship Windows (auto: closes + reopens editor)", priority = 1)]
+    [MenuItem(Menu + "Windows", priority = 1)]
     public static void ShipWindows() => BuildHandoff.Launch(new[] { "windows" });
 
-    [MenuItem(Menu + "Build & Ship macOS (auto: closes + reopens editor)", priority = 2)]
+    [MenuItem(Menu + "macOS", priority = 2)]
     public static void ShipMac() => BuildHandoff.Launch(new[] { "mac" });
 
-    [MenuItem(Menu + "Build & Ship Linux (auto: closes + reopens editor)", priority = 3)]
+    [MenuItem(Menu + "Linux", priority = 3)]
     public static void ShipLinux() => BuildHandoff.Launch(new[] { "linux" });
 
-    [MenuItem(Menu + "Build & Ship All Desktop — Windows + macOS (auto: closes + reopens editor)", priority = 4)]
+    [MenuItem(Menu + "All Desktop (Windows + macOS)", priority = 4)]
     public static void ShipAllDesktop() => BuildHandoff.Launch(new[] { "windows", "mac" });
 
     // The one-button release: WebGL first, then the desktop targets — each in its own
     // batchmode process (the handoff closes + reopens the editor), so no mid-session
     // build-target switch ever poisons Addressables/SBP. Linux is omitted (its
     // Addressables build is broken — ship it explicitly if/when fixed).
-    [MenuItem(Menu + "Build & Ship EVERYTHING — WebGL + Desktop (auto: closes + reopens editor)", priority = 5)]
+    [MenuItem(Menu + "Everything (no version bump)", priority = 5)]
     public static void ShipEverything() => BuildHandoff.Launch(new[] { "webgl", "windows", "mac" });
 
     // ---- version ------------------------------------------------------------
