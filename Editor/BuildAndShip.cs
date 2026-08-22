@@ -257,6 +257,10 @@ public static class BuildAndShip {
         psi.EnvironmentVariables["COPYFILE_DISABLE"] = "1"; // no ._AppleDouble entries
         psi.ArgumentList.Add("--exclude");
         psi.ArgumentList.Add(".DS_Store");
+        // Burst writes "<product>_BurstDebugInformation_DoNotShip/" next to the player (symbol
+        // files for crash decoding). Unity names it DoNotShip for a reason — keep it local.
+        psi.ArgumentList.Add("--exclude");
+        psi.ArgumentList.Add("*_BurstDebugInformation_DoNotShip");
         psi.ArgumentList.Add("-czf");
         psi.ArgumentList.Add(tgzPath);
         psi.ArgumentList.Add("."); // contents of sourceDir (WorkingDirectory)
@@ -402,6 +406,7 @@ public static class BuildAndShip {
             if (name == ".DS_Store" || name.StartsWith("._", StringComparison.Ordinal)) continue;
             var entryName = file.Substring(baseLen).Replace('\\', '/');
             if (entryName.StartsWith("__MACOSX/") || entryName.Contains("/__MACOSX/")) continue;
+            if (entryName.Contains("_BurstDebugInformation_DoNotShip/")) continue; // Burst symbols — local only
             zip.CreateEntryFromFile(file, entryName, System.IO.Compression.CompressionLevel.Optimal);
         }
     }
